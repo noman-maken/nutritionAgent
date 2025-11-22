@@ -8,7 +8,7 @@ import Sidebar from "@/components/Sidebar";
 import uploadFile from "@/utils/upload_file";
 
 // ===== WhatsApp visual tokens =====
-const WHATSAPP_GREEN = "#128C7E"; // header bg
+const WHATSAPP_GREEN = "#1f2937"; // header bg
 const WHATSAPP_GREEN_DARK = "#075E54"; // mic bg
 const OUTGOING_BG = "#DCF8C6"; // my messages
 const INCOMING_BG = "#FFFFFF"; // other messages
@@ -354,19 +354,25 @@ export default function ChatInterface() {
                                 />
                             </div>
 
-                            {isRecording ? (
-                                <Button type="button" onClick={stopRecording} size="icon" className="h-11 w-11 rounded-full bg-red-600 hover:bg-red-700 flex-shrink-0">
-                                    <Square className="h-5 w-5" />
-                                </Button>
-                            ) : input.trim() ? (
+
                                 <Button type="submit" size="icon" disabled={isLoading} className="h-11 w-11 rounded-full flex-shrink-0" style={{ backgroundColor: WHATSAPP_GREEN, color: "white" }}>
                                     <Send className="h-5 w-5" />
                                 </Button>
-                            ) : (
-                                <Button type="button" onClick={startRecording} size="icon" disabled={isLoading} className="h-11 w-11 rounded-full flex-shrink-0 hover:opacity-90" style={{ backgroundColor: WHATSAPP_GREEN_DARK, color: "white" }}>
-                                    <Mic className="h-5 w-5" />
-                                </Button>
-                            )}
+
+
+                            {/*{isRecording ? (*/}
+                            {/*    <Button type="button" onClick={stopRecording} size="icon" className="h-11 w-11 rounded-full bg-red-600 hover:bg-red-700 flex-shrink-0">*/}
+                            {/*        <Square className="h-5 w-5" />*/}
+                            {/*    </Button>*/}
+                            {/*) : input.trim() ? (*/}
+                            {/*    <Button type="submit" size="icon" disabled={isLoading} className="h-11 w-11 rounded-full flex-shrink-0" style={{ backgroundColor: WHATSAPP_GREEN, color: "white" }}>*/}
+                            {/*        <Send className="h-5 w-5" />*/}
+                            {/*    </Button>*/}
+                            {/*) : (*/}
+                            {/*    <Button type="button" onClick={startRecording} size="icon" disabled={isLoading} className="h-11 w-11 rounded-full flex-shrink-0 hover:opacity-90" style={{ backgroundColor: WHATSAPP_GREEN_DARK, color: "white" }}>*/}
+                            {/*        <Mic className="h-5 w-5" />*/}
+                            {/*    </Button>*/}
+                            {/*)}*/}
                         </div>
                     </form>
                 </div>
