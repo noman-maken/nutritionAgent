@@ -43,11 +43,12 @@ export default function Sidebar({
         />
       )}
 
-      <aside
-        className={`fixed lg:relative top-0 left-0 h-screen bg-gray-900 text-white transition-transform duration-300 z-50 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        } w-[260px] flex flex-col`}
-      >
+        <aside
+            className={`fixed lg:relative top-0 left-0 h-screen bg-[#1f2937] text-white transition-transform duration-300 z-50 ${
+                isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+            } w-[260px] flex flex-col`}
+        >
+
         <div className="p-3 border-b border-gray-700 flex items-center justify-between">
           <Button
             onClick={onNewChat}

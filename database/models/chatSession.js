@@ -11,6 +11,10 @@ const initChatSession = (sequelize, Types) => {
                 defaultValue: Types.UUIDV4,
                 primaryKey: true,
             },
+            user_id: {
+                type: Types.UUID,
+                allowNull: false,
+            },
             title: {
                 type: Types.STRING,
                 allowNull: false,

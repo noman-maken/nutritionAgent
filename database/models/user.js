@@ -28,8 +28,6 @@ const initUser = (sequelize, Types) => {
 			email_confirmed: Types.BOOLEAN,
 			status: Types.BOOLEAN,
 			token: Types.STRING,
-
-
 		},
 		{
 			sequelize,

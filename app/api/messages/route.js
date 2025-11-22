@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ChatSession, Message } from "/database/models";
+import {authCheck} from "../../../utils/authCheck";
 
 export const runtime = "nodejs";       // Node, so Sequelize can use fs
 export const dynamic = "force-dynamic";
@@ -100,6 +101,7 @@ export async function GET(req) {
 // Body: { session_id: string, content?: string, audio_url?: string | {urls:[], results:[{url, mime}]}}
 export async function POST(req) {
     try {
+
         const body = await req.json();
         const { content, audio_url: audioInput, session_id } = body || {};
         if (!session_id) {
