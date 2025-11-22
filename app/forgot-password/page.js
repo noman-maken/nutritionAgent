@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import {toast} from "react-hot-toast";
 
 export default function ForgotPasswordPage() {
     const [loading, setLoading] = useState(false);
@@ -18,9 +19,9 @@ export default function ForgotPasswordPage() {
 
             setMsg({
                 type: "success",
-                text: "Password reset link has been sent to your email.",
+                text: "If an account exists, a reset email has been sent.",
             });
-
+            toast.success("If an account exists, a reset email has been sent.");
         } catch (err) {
             const error = err.response?.data?.message || "Unable to send reset link.";
             setMsg({ type: "error", text: error });
