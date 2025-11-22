@@ -1,5 +1,5 @@
 import { User } from "/database/models";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { createResponse } from "/utils/responseHelper";
 
 // --- in-memory rate limiter ---

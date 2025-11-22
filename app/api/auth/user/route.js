@@ -4,7 +4,7 @@ import { createResponse } from "/utils/responseHelper";
 import User from "/database/models/user";
 import { generateRandomString, generateSecureToken } from "/utils/generateRandom";
 import { EmailVerification } from "/utils/email/emailVerification";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { sendEmail } from "/utils/emailSender";
 
 export async function POST(req) {
