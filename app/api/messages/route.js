@@ -50,7 +50,7 @@ async function geminiReply(history, userText) {
 SYSTEM INSTRUCTIONS:
 ${NUTRITION_CONTEXT}
 
-RECENT CONVERSATION (last 15 messages):
+RECENT CONVERSATION:
 ${history.map(h => `${h.role}: ${h.text}`).join("\n")}
 
 USER NOW SAYS:
