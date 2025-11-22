@@ -17,7 +17,7 @@ export default function RegisterPage() {
         const email = e.target.email.value;
 
         try {
-            const res = await axios.post( `${baseUrl}/api/user`, {
+            const res = await axios.post( `${baseUrl}/api/auth/user`, {
                 first_name,
                 last_name,
                 email,
