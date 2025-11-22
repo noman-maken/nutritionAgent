@@ -29,11 +29,10 @@ function normalizeAudioUrl(input) {
 }
 
 // ---------- Fetch last N messages ----------
-async function getHistory(session_id, limit = 15) {
+async function getHistory(session_id) {
     const rows = await Message.findAll({
         where: { session_id },
         order: [["created_at", "DESC"]],
-        limit,
         attributes: ["role", "content"],
     });
 
