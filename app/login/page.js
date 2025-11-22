@@ -1,35 +1,35 @@
 "use client";
-import { useState } from "react";
-import axios from "axios";
+
+import { useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { toast } from "react-hot-toast";
 
 export default function LoginPage() {
-    const [loading, setLoading] = useState(false);
-    const [msg, setMsg] = useState({ type: "", text: "" });
+    const { register, handleSubmit, reset } = useForm({
+        defaultValues: { email: "", password: "" },
+    });
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setMsg({ type: "", text: "" });
+    const [isPending, startTransition] = useTransition();
 
-        const email = e.target.email.value;
-        const password = e.target.password.value;
+    const onSubmit = (data) => {
+        startTransition(async () => {
+            const response = await signIn("credentials", {
+                email: data.email,
+                password: data.password,
+                redirect: false,
+            });
 
-        try {
-            const res = await axios.post("/api/auth/login", { email, password });
-
-            setMsg({ type: "success", text: "Login successful!" });
-
-            // redirect after success
-            setTimeout(() => {
-                window.location.href = "/";
-            }, 800);
-
-        } catch (err) {
-            const error = err.response?.data?.message || "Invalid email or password.";
-            setMsg({ type: "error", text: error });
-        }
-
-        setLoading(false);
+            if (response?.ok) {
+                toast.success("Login successful!");
+                window.location.assign("/");
+                reset();
+            } else if (response?.error) {
+                toast.error(response.error || "Invalid email or password.");
+            } else {
+                toast.error("Something went wrong.");
+            }
+        });
     };
 
     return (
@@ -41,16 +41,18 @@ export default function LoginPage() {
                     Welcome back to Nutrition Agent.
                 </p>
 
-                <form onSubmit={handleLogin} className="space-y-5">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 
                     {/* Email */}
                     <div>
                         <label className="text-sm font-medium text-gray-700">Email</label>
                         <input
                             type="email"
-                            name="email"
+                            placeholder="Your email"
+                            className="w-full mt-1 px-4 py-2.5 border rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 outline-none"
                             required
-                            className="w-full mt-1 px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            {...register("email")}
                         />
                     </div>
 
@@ -59,9 +61,11 @@ export default function LoginPage() {
                         <label className="text-sm font-medium text-gray-700">Password</label>
                         <input
                             type="password"
-                            name="password"
+                            placeholder="••••••••"
+                            className="w-full mt-1 px-4 py-2.5 border rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 outline-none"
                             required
-                            className="w-full mt-1 px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            {...register("password")}
                         />
                     </div>
 
@@ -71,32 +75,24 @@ export default function LoginPage() {
                         </a>
                     </div>
 
-                    {/* Button */}
+                    {/* Submit */}
                     <button
                         type="submit"
-                        disabled={loading}
-                        className="w-full bg-blue-600 text-white py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 disabled:bg-blue-300"
+                        disabled={isPending}
+                        className="w-full bg-blue-600 text-white py-3 rounded-xl text-lg font-semibold
+                                   hover:bg-blue-700 disabled:bg-blue-300"
                     >
-                        {loading ? "Logging in..." : "Login"}
+                        {isPending ? "Logging in..." : "Login"}
                     </button>
 
                     <p className="text-center text-gray-600 text-sm mt-2">
-                        Don&#39;t have an account?
+                        Don&apos;t have an account?
                         <a href="/register" className="text-blue-600 ml-1 hover:underline">
                             Register
                         </a>
                     </p>
                 </form>
 
-                {msg.text && (
-                    <p
-                        className={`mt-4 text-center text-sm ${
-                            msg.type === "error" ? "text-red-600" : "text-green-600"
-                        }`}
-                    >
-                        {msg.text}
-                    </p>
-                )}
             </div>
         </div>
     );

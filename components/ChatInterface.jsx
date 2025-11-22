@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { Send, Mic, Square, PanelLeft, Smile, Check, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import Sidebar from "@/components/Sidebar";
-import uploadFile from "@/utils/upload_file";
+import Sidebar from "/components/Sidebar";
+import uploadFile from "/utils/upload_file";
 
 // ===== WhatsApp visual tokens =====
 const WHATSAPP_GREEN = "#1f2937"; // header bg
