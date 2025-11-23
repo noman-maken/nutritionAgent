@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { ChatSession, Message } from "/database/models";
 import { NUTRITION_CONTEXT } from "../../../utils/nutritionContext";
+import connection from "../../../database/connection";
+
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -160,12 +162,10 @@ export async function POST(req) {
         });
 
         // Update session timestamp
-        await ChatSession.update(
-            { updated_at: new Date() },
-            { where: { id: session_id } }
-        );
+        const chatSession = await ChatSession.findByPk(session_id);
+        chatSession.changed('updated_at', true);  // mark field as changed
+        await chatSession.save();
 
-        // ---------- AI REPLY ----------
         const history = await getHistory(session_id);
         const aiText = await geminiReply(history, finalContent);
 

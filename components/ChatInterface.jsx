@@ -191,6 +191,7 @@ export default function ChatInterface() {
 
         setInput("");
         setIsLoading(false);
+        await loadChatSessions();
     };
 
     const handleSubmit = (e) => {

@@ -25,6 +25,7 @@ const initChatSession = (sequelize, Types) => {
             sequelize,
             modelName: "ChatSession",
             tableName: "chat_sessions",
+            timestamps: true,
             createdAt: "created_at",
             updatedAt: "updated_at",
         }

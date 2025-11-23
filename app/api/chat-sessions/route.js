@@ -22,9 +22,6 @@ export async function GET(req) {
 
 export async function POST(req) {
     const login_user = await authCheck(req);
-
-    console.log(login_user);
-console.log("api call");
     if (!login_user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
