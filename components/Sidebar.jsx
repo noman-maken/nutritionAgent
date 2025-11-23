@@ -18,6 +18,36 @@ export default function Sidebar({
                                     isOpen,
                                     onToggle,
                                 }) {
+    // 🟦 Format date into Today / Yesterday / Date
+    const formatDateLabel = (dateString) => {
+        const date = new Date(dateString);
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        const isSameDay = (a, b) =>
+            a.getFullYear() === b.getFullYear() &&
+            a.getMonth() === b.getMonth() &&
+            a.getDate() === b.getDate();
+
+        if (isSameDay(date, today)) return "Today";
+        if (isSameDay(date, yesterday)) return "Yesterday";
+
+        return date.toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+        });
+    };
+
+    // 🟩 Group chat sessions by date
+    const grouped = chatSessions.reduce((groups, session) => {
+        const label = formatDateLabel(session.updated_at);
+        if (!groups[label]) groups[label] = [];
+        groups[label].push(session);
+        return groups;
+    }, {});
+
     return (
         <>
             {/* Mobile Backdrop */}
@@ -31,13 +61,13 @@ export default function Sidebar({
             {/* Sidebar */}
             <aside
                 className={`
-          fixed lg:relative top-0 left-0 h-screen
-          w-[260px] flex flex-col z-50
-          bg-gradient-to-b from-slate-900 via-slate-850 to-slate-800
-          border-r border-white/10 shadow-xl text-white
-          transition-transform duration-300 ease-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-        `}
+                    fixed lg:relative top-0 left-0 h-screen
+                    w-[260px] flex flex-col z-50
+                    bg-gradient-to-b from-slate-900 via-slate-850 to-slate-800
+                    border-r border-white/10 shadow-xl text-white
+                    transition-transform duration-300 ease-out
+                    ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+                `}
             >
                 {/* New Chat */}
                 <div className="p-4 border-b border-white/10 flex items-center justify-between">
@@ -61,30 +91,46 @@ export default function Sidebar({
 
                 {/* Chat List */}
                 <ScrollArea className="flex-1">
-                    <div className="p-3 space-y-2">
+                    <div className="p-3 space-y-4">
+
+                        {/* If no chats */}
                         {chatSessions.length === 0 && (
                             <div className="text-center text-white/40 text-sm py-6">
                                 No chats yet
                             </div>
                         )}
 
-                        {chatSessions.map((session) => (
-                            <button
-                                key={session.id}
-                                onClick={() => {
-                                    onSelectSession(session.id);
-                                    if (window.innerWidth < 1024) onToggle();
-                                }}
-                                className={`w-full text-left px-3 py-2 rounded-xl flex items-center gap-3 transition-all border border-white/5 ${
-                                    currentSessionId === session.id
-                                        ? "bg-white/10 text-white shadow-sm"
-                                        : "text-white/70 hover:bg-white/10 hover:text-white"
-                                }`}
-                            >
-                                <MessageSquare className="h-4 w-4 opacity-90" />
-                                <span className="truncate">{session.title}</span>
-                            </button>
+                        {/* 🟩 RENDER GROUPED CHATS */}
+                        {Object.keys(grouped).map((dateLabel) => (
+                            <div key={dateLabel} className="space-y-2">
+                                {/* Heading (Today / Yesterday / Date) */}
+                                <h3 className="text-xs uppercase tracking-wide text-white/40 px-1">
+                                    {dateLabel}
+                                </h3>
+
+                                {/* Chat Buttons */}
+                                {grouped[dateLabel].map((session) => (
+                                    <button
+                                        key={session.id}
+                                        onClick={() => {
+                                            onSelectSession(session.id);
+                                            if (window.innerWidth < 1024) onToggle();
+                                        }}
+                                        className={`w-full text-left px-3 py-2 rounded-xl flex items-center gap-3 transition-all border border-white/5 
+                                            ${
+                                            currentSessionId === session.id
+                                                ? "bg-white/10 text-white shadow-sm"
+                                                : "text-white/70 hover:bg-white/10 hover:text-white"
+                                        }
+                                        `}
+                                    >
+                                        <MessageSquare className="h-4 w-4 opacity-90" />
+                                        <span className="truncate">{session.title}</span>
+                                    </button>
+                                ))}
+                            </div>
                         ))}
+
                     </div>
                 </ScrollArea>
 
