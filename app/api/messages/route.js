@@ -30,6 +30,42 @@ function normalizeAudioUrl(input) {
     return null;
 }
 
+async function generateTitleFromAI(aiText) {
+    const prompt = `
+You are a title generator.
+Create a SHORT 3–6 word title summarizing this message:
+
+"${aiText}"
+
+Rules:
+- No punctuation
+- No quotes
+- No emojis
+- No markdown
+- Use title case
+`;
+
+    const payload = {
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 10 }
+    };
+
+    const r = await fetch(GEMINI_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+
+    const j = await r.json();
+    return (
+        j?.candidates?.[0]?.content?.parts?.[0]?.text
+            ?.replace(/[^a-zA-Z0-9 ]/g, "")  // remove punctuation
+            ?.trim()
+        || "New Chat"
+    );
+}
+
+
 // ---------- Fetch last N messages ----------
 async function getHistory(session_id) {
     const rows = await Message.findAll({
@@ -174,6 +210,20 @@ export async function POST(req) {
             role: "assistant",
             content: aiText,
         });
+
+        const shouldUpdate =
+            !chatSession.title ||
+            chatSession.title === "New Chat" ||
+            chatSession.title.trim().length < 3;
+
+        if (shouldUpdate) {
+            const newTitle = await generateTitleFromAI(aiText);
+
+            await ChatSession.update(
+                { title: newTitle },
+                { where: { id: session_id } }
+            );
+        }
 
         return NextResponse.json({ user: userMsg, assistant: aiMsg }, { status: 201 });
 
