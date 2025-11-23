@@ -1,19 +1,14 @@
 import { NextResponse } from "next/server";
 import { ChatSession, Message } from "/database/models";
 import { NUTRITION_CONTEXT } from "../../../utils/nutritionContext";
-import connection from "../../../database/connection";
-
-
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-// ---------- Gemini ----------
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const MODEL = "gemini-2.5-flash-lite";
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
-// ---------- Audio Normalizer ----------
 function normalizeAudioUrl(input) {
     if (!input) return null;
     if (typeof input === "string") return input;
@@ -66,7 +61,6 @@ Rules:
 }
 
 
-// ---------- Fetch last N messages ----------
 async function getHistory(session_id) {
     const rows = await Message.findAll({
         where: { session_id },
@@ -130,9 +124,6 @@ ${userText}
     );
 }
 
-// ---------- ROUTES ----------
-
-// GET old messages
 export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const sessionId = searchParams.get("sessionId");
@@ -166,7 +157,6 @@ export async function POST(req) {
 
         const audioUrl = normalizeAudioUrl(audioInput);
 
-        // ---------- Transcribe audio ----------
         let transcript = null;
         if (audioUrl) {
             const origin = new URL(req.url).origin;
@@ -196,8 +186,6 @@ export async function POST(req) {
             audio_url: audioUrl || null,
             transcript: transcript || null,
         });
-
-        // Update session timestamp
 
 
         const history = await getHistory(session_id);
