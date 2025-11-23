@@ -198,9 +198,7 @@ export async function POST(req) {
         });
 
         // Update session timestamp
-        const chatSession = await ChatSession.findByPk(session_id);
-        chatSession.changed('updated_at', true);  // mark field as changed
-        await chatSession.save();
+
 
         const history = await getHistory(session_id);
         const aiText = await geminiReply(history, finalContent);
@@ -210,6 +208,10 @@ export async function POST(req) {
             role: "assistant",
             content: aiText,
         });
+
+        const chatSession = await ChatSession.findByPk(session_id);
+        chatSession.changed('updated_at', true);  // mark field as changed
+        await chatSession.save();
 
         const shouldUpdate =
             !chatSession.title ||
